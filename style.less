@@ -1,0 +1,88 @@
+
+
+@position: 800ms;
+@scale: 300ms;
+
+
+html {
+	overflow: hidden;
+	//background: url(../img/aqua-blue.jpg) no-repeat;
+}
+
+.dock {
+	position: absolute;
+	bottom: 20px;
+	left: 0px;
+	right: 0px;
+	text-align: center;
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+	z-index: 1;
+
+	li {
+		//background-color: rgba(255,255,255,0.2);
+		display: inline-block;
+		margin: 0px 20px;
+		line-height: 1px;
+	}
+	img {
+		background-repeat: no-repeat;
+		background-size: 100%;
+		width: 80px;
+		cursor: pointer;
+
+		&.genie-thumb {
+			.bgTransition(@position);
+		}
+	}
+}
+
+.genie {
+	//box-shadow: 0px 3px 33px rgba(0,0,0,0.85);
+	//background-color: rgba(0,0,0,0.2);
+	position: absolute;
+	display: none;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	&.expand .genie-step {
+		.bgTransition(@position);
+
+		-moz-animation: @scale @position genie_scale forwards;
+		-webkit-animation: @scale @position genie_scale forwards;
+	}
+	&.collapse .genie-step {
+		.transition(@scale);
+	}
+	&.change-pace .genie-step {
+		.bgTransition(@position);
+	}
+
+	.genie-step {
+		//background-color: rgba(0,0,0,0.1);
+		background-repeat: no-repeat;
+		background-image: inherit;
+		background-size: 100%;
+		position: absolute;
+	}
+}
+
+
+// Mixins
+.bgTransition ( @duration ) {
+	-moz-transition: background-position @duration ease-in-out;
+	-webkit-transition: background-position @duration ease-in-out;
+}
+.transition ( @duration ) {
+	-moz-transition: all @duration ease-in-out;
+	-webkit-transition: all @duration ease-in-out;
+}
+
+// keyframes
+@-moz-keyframes genie_scale { 100% {left: 0px; width: 100%} }
+@-webkit-keyframes genie_scale { 100% {left: 0px; width: 100%;} }
+
+
+
+
