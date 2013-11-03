@@ -1,4 +1,6 @@
 
+// Javascript by Hakan Bilgin (c) 2013
+
 (function() {
 
 'use strict';
@@ -46,12 +48,14 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 				thumbs[i].setAttribute('data-height', gauge.height );
 				thumbs[i].style.backgroundImage = 'url('+ gauge.src +')';
 				thumbs[i].style.height = thumbs[i].height +'px';
-				thumbs[i].src = '../img/_.gif';
+				thumbs[i].src = './img/_.gif';
 			}
 			genie.el = document.body.appendChild( document.createElement('div') );
 
 			document.addEventListener('click', genie.doEvent, false);
 			//genie.expand( thumbs[0] );
+
+			LS({id: 'genie_text'});
 		},
 		doEvent: function(event) {
 			switch(event.type) {
