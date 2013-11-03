@@ -1,0 +1,141 @@
+
+
+@position: 600ms;
+@scale: 300ms;
+
+
+html {
+	overflow: hidden;
+	background: #eee;
+	background: url(../img/aqua-blue.jpg) no-repeat center center fixed;
+	background-size: cover;
+}
+
+#genie_text {
+	position: absolute;
+	top: 20px;
+	left: 50%;
+	margin-left: -355px;
+}
+
+.dock {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	text-align: center;
+	overflow: hidden;
+	z-index: 1;
+
+	ul {
+		background: url(../img/board_middle.png) 50% 100% repeat-x;
+		position: relative;
+		display: inline-block;
+		list-style-type: none;
+		padding: 0px 20px;
+		margin: 0px auto;
+
+		&:before {
+			content: '';
+			background: url(../img/board_left.png) 50% 100% no-repeat;
+			position: absolute;
+			top: 0px;
+			bottom: 0px; 
+			left: -29px;
+			width: 29px;
+		}
+		&:after {
+			content: '';
+			background: url(../img/board_right.png) 50% 100% no-repeat;
+			position: absolute;
+			top: 0px;
+			bottom: 0px;
+			right: -29px;
+			width: 29px;
+		}
+
+		li {
+			//background: rgba(0,0,0,0.1);
+			position: relative;
+			display: inline-block;
+			margin: 0px 10px 25px 10px;
+			line-height: 1px;
+			width: 65px;
+
+			&:before {
+				content: '';
+				background: url(../img/shadow.png) 50% 50% no-repeat;
+				position: absolute;
+				bottom: -10px;
+				left: 0px;
+				right: 0px;
+				width: 68px;
+				height: 12px;
+				z-index: 1;
+			}
+		}
+	}
+
+	img {
+		width: 100%;
+		background-repeat: no-repeat;
+		background-size: 100%;
+		cursor: pointer;
+
+		&.genie-thumb {
+			.bgTransition( @position );
+		}
+		&.paced-thumb {
+			.bgTransitionIn( @position * 0.9 );
+		}
+	}
+}
+
+.genie {
+	position: absolute;
+	display: none;
+	background-repeat: no-repeat;
+	background-size: cover;
+	cursor: pointer;
+
+	&.expand .genie-step {
+		.bgTransition(@position);
+	}
+	&.fan .genie-step {
+		.transition(@scale);
+	}
+	&.collapse .genie-step {
+		.transition(@scale);
+	}
+	&.change-pace {
+		box-shadow: 0px 0px 30px rgba(0,0,0,0.5);
+		.genie-step {
+			.bgTransitionIn(@position * 1.9);
+		}
+	}
+
+	.genie-step {
+		//background-color: rgba(0,0,0,0.1);
+		background-repeat: no-repeat;
+		background-image: inherit;
+		background-size: 100%;
+		position: absolute;
+	}
+}
+
+
+// Mixins
+.bgTransitionIn ( @duration ) {
+	-moz-transition:    background-position @duration ease-in;
+	-webkit-transition: background-position @duration ease-in;
+}
+.bgTransition ( @duration ) {
+	-moz-transition:    background-position @duration ease-out;
+	-webkit-transition: background-position @duration ease-out;
+}
+.transition ( @duration ) {
+	-moz-transition:    all @duration ease-out;
+	-webkit-transition: all @duration ease-out;
+}
+
+
