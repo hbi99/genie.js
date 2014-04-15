@@ -1,3 +1,4 @@
+
 // Javascript by Hakan Bilgin (c) 2013
 
 (function() {
@@ -19,6 +20,7 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 			//if (el.scrollWidth > el.offsetWidth) dim.w = el.offsetWidth;
 			el = el.offsetParent;
 		}
+		//console.log(dim);
 		return dim;
 	},
 	prefixedEvent = function(el, type, callback) {
@@ -33,10 +35,11 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 
 	genie = {
 		active: false,
+		processing: false,
 		// chrome animates faster than firefox & safari
-		step_height: window.chrome ? 3 : 5,
+		step_height: window.chrome ? 0.5 : 0.5 ,
 		init: function() {
-			var thumbs = $('.dock img'),
+			var thumbs = genie.thumbs = $('.dock img'),
 				gauge  = new Image(),
 				il     = thumbs.length,
 				i      = 0;
@@ -50,16 +53,14 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 				thumbs[i].src = './img/_.gif';
 			}
 			genie.el = document.body.appendChild( document.createElement('div') );
-
 			document.addEventListener('click', genie.doEvent, false);
-			//genie.expand( thumbs[0] );
-
-			LS({id: 'genie_text'});
 		},
 		doEvent: function(event) {
+			//console.log('event:',event,'type:', event.type);
 			switch(event.type) {
 				case 'transitionend':
 				case 'webkitTransitionEnd':
+
 					var source      = genie.el,
 						target      = source.thumbEl,
 						source_dim  = getDim(source),
@@ -69,22 +70,25 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 						step_height = step[0].offsetHeight,
 						il          = step.length,
 						i           = 0;
-
+					//console.log('propertyName:',event.propertyName);
 					switch (event.propertyName) {
 						case 'left':
 							if (source.classList.contains('collapse')) {
+								console.log('left exec');
 								for (; i<il; i++) {
 									step[i].style.backgroundPosition = '0px '+ (diffT + i - (i * step_height)) +'px';
 								}
 								target.style.backgroundPosition = '0px 0px';
 								source.classList.add('change-pace');
 								source.style.height = '0px';
+								/*genie.processing = false;
+								genie.process_thumb = null;*/
 							}
 							break;
 						case 'background-position':
-						/* '-x' and '-y' suffix should be added in Chrome */
 						case 'background-position-x':
 						case 'background-position-y':
+							console.log('background-position exec');
 							if (source.classList.contains('expand')) {
 								for (; i<il; i++) {
 									step[i].style.left = '0px';
@@ -97,9 +101,8 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 								source.classList.remove('change-pace');
 								source.classList.remove('collapse');
 								source.innerHTML = '';
-								
+								genie.collapsing = false;
 								genie.active = false;
-
 								if (genie.next) {
 									genie.expand( genie.next );
 									genie.next = false;
@@ -108,6 +111,7 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 							break;
 						case 'width':
 							if (source.classList.contains('fan')) {
+								console.log('width exec');
 								source.style.backgroundPosition = '0px 0px';
 								setTimeout(function() {
 									source.classList.remove('fan');
@@ -115,14 +119,30 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 									source.innerHTML = '';
 								}, 0);
 								genie.active = target;
+								genie.processing = false;
+								genie.process_thumb = null;
 								//setTimeout(function() { genie.collapse(); }, 500);
 							}
 							break;
 					}
 					break;
 				case 'click':
+					//console.log(event.target, genie.active);
+					//console.log(genie.processing);
+					//console.log(genie.process_thumb);
 					if (event.target === genie.active) return;
+					if (genie.collapsing) return;
+					if (genie.processing && genie.process_thumb) {
+						//console.log('no wait , go back');
+						clearTimeout(genie.timer);
+					}
 					if (event.target.classList.contains('genie-thumb')) {
+						genie.processing = true;
+						genie.process_thumb = event.target;
+						genie.thumbs.forEach(function (e, i) {
+							if (e !== event.target)
+								e.style.backgroundPosition = '0px 0px';
+						});
 						if (genie.active) {
 							genie.next = event.target;
 							genie.collapse();
@@ -132,12 +152,15 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 						genie.expand( event.target );
 					}
 					if (event.target.classList.contains('genie')) {
-						genie.collapse();
+						genie.collapse(event.target);
 					}
 					break;
 			}
 		},
-		collapse: function() {
+		collapse: function(etarget) {
+			genie.collapsing = true;
+			genie.processing = true;
+			genie.process_thumb = etarget;
 			var step_height = this.step_height,
 				source      = this.el,
 				source_dim  = getDim(source),
@@ -159,12 +182,12 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 				top    = i * step_height;
 				bg_pos = '0px '+ (((top + step_height) / source_dim.h) * 100 ) + '%';
 				htm   += '<div class="genie-step" style="left: 0px; top: '+ top +'px; width: '+ source_dim.w +
-							'px; height: '+ (step_height + 1) +'px; background-position: '+ bg_pos + ';"></div>';
+							'px; height: '+ (step_height ) +'px; background-position: '+ bg_pos + ';"></div>';
 			}
 			source.innerHTML = htm;
 			source.classList.add('collapse');
 
-			setTimeout(function() {
+			genie.timer = setTimeout(function() {
 				var steps         = source.childNodes,
 					radians_left  = Math.floor((target_dim.l - source_dim.l) / 2),
 					radians_width = Math.floor((target_dim.w - source_dim.w) / 2),
@@ -222,10 +245,10 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 				source_dim    = getDim(source),
 				target_dim    = this.setupTarget(source, source_dim),
 				diffT         = source_dim.t - target_dim.t,
-				radians_left  = Math.floor((source_dim.l - target_dim.l) / 2),
-				radians_width = Math.floor((source_dim.w - target_dim.w) / 2),
+				radians_left  = ((source_dim.l - target_dim.l) / 2),
+				radians_width = ((source_dim.w - target_dim.w) / 2),
 				rw_offset     = radians_width - source_dim.w,
-				step_length   = Math.ceil((source_dim.t - target_dim.t) / step_height),
+				step_length   = ((source_dim.t - target_dim.t) / step_height),
 				increase      = (Math.PI * 2) / (step_length * 2),
 				counter       = 4.75,
 				htm           = '',
@@ -235,9 +258,9 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 			for (; i<step_length; i++) {
 				bgy = (diffT - (i * step_height));
 				htm += '<div class="genie-step" style="top: '+ (i * step_height) +
-						'px; height: '+ (step_height + 1) +'px; background-position: 0px '+ bgy +
-						'px; left: '+ Math.ceil((Math.sin(counter) * radians_left) + radians_left) +
-						'px; width: '+ Math.ceil((Math.sin(counter) * radians_width) - rw_offset) +'px;"></div>';
+						'px; height: '+ (step_height+1 ) +'px; background-position: 0px '+ bgy +
+						'px; left: '+ ((Math.sin(counter) * radians_left) + radians_left) +
+						'px; width: '+ ((Math.sin(counter) * radians_width) - rw_offset) +'px;"></div>';
 				counter += increase;
 			}
 			target.innerHTML = htm;
@@ -246,7 +269,7 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 			prefixedEvent(target.childNodes[step_length-1], 'TransitionEnd', genie.doEvent);
 
 			setTimeout(function() {
-				var steps    = target.childNodes,
+				var steps   = target.childNodes,
 					s_dim    = source_dim,
 					t_dim    = target_dim,
 					s_height = step_height,
