@@ -5,7 +5,7 @@
 
 'use strict';
 
-var $ = function(selector, context) { // extreme slim version of jQuery
+	var $ = function(selector, context) { // extreme slim version of jQuery
 		context = context || document;
 		return [].slice.call( context.querySelectorAll(selector) );
 	},
