@@ -1,4 +1,3 @@
-
 // Javascript by Hakan Bilgin (c) 2013
 
 (function() {
@@ -83,6 +82,9 @@ var $ = function(selector, context) { // extreme slim version of jQuery
 							}
 							break;
 						case 'background-position':
+						/* '-x' and '-y' suffix should be added in Chrome */
+						case 'background-position-x':
+						case 'background-position-y':
 							if (source.classList.contains('expand')) {
 								for (; i<il; i++) {
 									step[i].style.left = '0px';
