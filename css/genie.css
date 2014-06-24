@@ -74,13 +74,13 @@ html {
   background-size: 100%;
   cursor: pointer;
 }
-.dock img.genie-thumb { /* 缩略图释放 */
-  -moz-transition: background-position 500ms ease-out;
-  -webkit-transition: background-position 500ms ease-out;
+.dock img.genie-thumb {
+  -moz-transition: background-position 700ms ease-out;
+  -webkit-transition: background-position 700ms ease-out;
 }
-.dock img.paced-thumb { /* 缩略图还原 */
-  -moz-transition: background-position 250ms ease-in;
-  -webkit-transition: background-position 250ms ease-in;
+.dock img.paced-thumb {
+  -moz-transition: background-position 630ms ease-in;
+  -webkit-transition: background-position 630ms ease-in;
 }
 .genie {
   position: absolute;
@@ -89,24 +89,24 @@ html {
   background-size: cover;
   cursor: pointer;
 }
-.genie.expand .genie-step { /* 释放 */
-  -moz-transition: background-position 500ms ease-out;
-  -webkit-transition: background-position 500ms ease-out;
+.genie.expand .genie-step {
+  -moz-transition: background-position 700ms ease-out;
+  -webkit-transition: background-position 700ms ease-out;
 }
-.genie.fan .genie-step { /* 释放后还原 */
-  -moz-transition: all 250ms ease-out;
-  -webkit-transition: all 250ms ease-out;
+.genie.fan .genie-step {
+  -moz-transition: all 300ms ease-out;
+  -webkit-transition: all 300ms ease-out;
 }
-.genie.collapse .genie-step { /* 吸收前压缩 */
-  -moz-transition: all 250ms ease-out;
-  -webkit-transition: all 250ms ease-out;
+.genie.collapse .genie-step {
+  -moz-transition: all 300ms ease-out;
+  -webkit-transition: all 300ms ease-out;
 }
-.genie.change-pace { 
+.genie.change-pace {
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
 }
-.genie.change-pace .genie-step { /* 吸收 */
-  -moz-transition: background-position 500ms ease-in;
-  -webkit-transition: background-position 500ms ease-in;
+.genie.change-pace .genie-step {
+  -moz-transition: background-position 1330ms ease-in;
+  -webkit-transition: background-position 1330ms ease-in;
 }
 .genie .genie-step {
   background-repeat: no-repeat;
